@@ -72,11 +72,11 @@ public abstract class BaseEnemy : MonoBehaviour
 
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, COLLISION_CHECK_RADIUS);
 
-        bool isBlocked = hitCollider != null && 
-        (hitCollider.CompareTag(GameManager.ENEMY_TAG) || 
-        hitCollider.CompareTag(GameManager.WALL_TAG)) ||
-        hitCollider.CompareTag(GameManager.PLAYER_TAG);
-
+        bool isBlocked = hitCollider != null && (
+            hitCollider.CompareTag(GameManager.ENEMY_TAG) || 
+            hitCollider.CompareTag(GameManager.WALL_TAG) ||
+            hitCollider.CompareTag(GameManager.PLAYER_TAG)
+        );
         if (!isBlocked)
         {
             currentGridPosition = newGridPosition;
