@@ -4,6 +4,7 @@ public abstract class BaseEnemy : MonoBehaviour
 {
     [SerializeField] protected float moveSpeed = 5f;
     protected bool isMoving = false;
+    public bool IsMoving => isMoving;
     protected Vector3Int currentGridPosition;
     protected Vector3 targetPosition;
     protected Grid grid;
@@ -15,11 +16,20 @@ public abstract class BaseEnemy : MonoBehaviour
     /// </summary>
     protected virtual void Start()
     {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("GameManager not found in scene");
+            enabled = false;
+            return;
+        }
+
         grid = GameManager.Instance.grid;
 
-        gameObject.tag = "Enemy";
+        gameObject.tag = GameManager.ENEMY_TAG;
+
 
         if (!TryGetComponent<CircleCollider2D>(out var collider))
+
         {
             collider = gameObject.AddComponent<CircleCollider2D>();
             collider.radius = COLLISION_CHECK_RADIUS;
@@ -48,7 +58,8 @@ public abstract class BaseEnemy : MonoBehaviour
 
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, COLLISION_CHECK_RADIUS);
 
-        if (hitCollider == null || (!hitCollider.CompareTag("Player") && !hitCollider.CompareTag("Wall") && !hitCollider.CompareTag("Enemy")))
+        if (hitCollider == null || (!hitCollider.CompareTag(GameManager.PLAYER_TAG) && !hitCollider.CompareTag(GameManager.WALL_TAG) 
+        && !hitCollider.CompareTag(GameManager.ENEMY_TAG)))
         {
             currentGridPosition = newGridPosition;
             targetPosition = newWorldPosition;

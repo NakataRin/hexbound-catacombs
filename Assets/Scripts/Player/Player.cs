@@ -12,16 +12,21 @@ public class Player : MonoBehaviour
     
     void Start()
     {
-        if (grid == null)
+        if (GameManager.Instance == null)
         {
-            grid = GameManager.Instance.grid;
+            Debug.LogError("GameManager not found in scene");
+            enabled = false;
+            return;
         }
 
-        gameObject.tag = "Player";
+        grid = GameManager.Instance.grid;
+
+        gameObject.tag = GameManager.PLAYER_TAG;
         
         // Snap to grid on start
         currentGridPosition = grid.WorldToCell(transform.position);
         transform.position = grid.GetCellCenterWorld(currentGridPosition);
+
         targetPosition = transform.position;
     }
 
@@ -69,12 +74,13 @@ public class Player : MonoBehaviour
         Vector3 newWorldPosition = grid.GetCellCenterWorld(newGridPosition);
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, 0.1f);
 
-        if (hitCollider == null || (!hitCollider.CompareTag("Enemy") && !hitCollider.CompareTag("Wall")))
+        if (hitCollider == null || (!hitCollider.CompareTag(GameManager.ENEMY_TAG) && !hitCollider.CompareTag(GameManager.WALL_TAG)))
         {
             currentGridPosition = newGridPosition;
             targetPosition = newWorldPosition;
             isMoving = true;
         }
+
     }
 
     void EndTurn()
