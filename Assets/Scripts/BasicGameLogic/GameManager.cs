@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Player player;
     private List<Enemy> enemies = new List<Enemy>();
     private bool isProcessingTurn = false;
+    public Grid grid;
 
     void Awake()
     {
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        grid = GetGrid();
+
         // Find all enemies in the scene
         enemies.AddRange(FindObjectsByType<Enemy>(FindObjectsSortMode.None));
         if (enemies.Count == 0)
@@ -81,5 +84,25 @@ public class GameManager : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Get the grid from the scene.
+    /// <param name="grid">Intended to be used by other scripts to access the grid.</param>
+    /// </summary>
+    private Grid GetGrid()
+    {
+        if (grid == null) 
+        {
+            grid = FindAnyObjectByType<Grid>();
+
+            if (grid == null)
+            {
+                Debug.LogError("No grid found in the scene");
+                enabled = false;
+                return null;
+            }
+        }
+        return grid;
     }
 }

@@ -3,8 +3,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Grid grid;  // Reference to the Grid component
-    
+
+    private Grid grid;
     private bool isPlayerTurn = true;
     private bool isMoving = false;
     private Vector3 targetPosition;
@@ -14,16 +14,11 @@ public class Player : MonoBehaviour
     {
         if (grid == null)
         {
-            grid = FindAnyObjectByType<Grid>();
-            if (grid == null)
-            {
-                Debug.LogError("No Grid component found in the scene");
-                enabled = false;
-                return;
-            }
+            grid = GameManager.Instance.grid;
         }
-        
 
+        gameObject.tag = "Player";
+        
         // Snap to grid on start
         currentGridPosition = grid.WorldToCell(transform.position);
         transform.position = grid.GetCellCenterWorld(currentGridPosition);
@@ -71,12 +66,10 @@ public class Player : MonoBehaviour
     void TryMove(Vector3Int direction)
     {
         Vector3Int newGridPosition = currentGridPosition + direction;
-        
-        // Check if the new position has a wall
         Vector3 newWorldPosition = grid.GetCellCenterWorld(newGridPosition);
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, 0.1f);
 
-        if (hitCollider == null) // No wall at the new position
+        if (hitCollider == null || (!hitCollider.CompareTag("Enemy") && !hitCollider.CompareTag("Wall")))
         {
             currentGridPosition = newGridPosition;
             targetPosition = newWorldPosition;
