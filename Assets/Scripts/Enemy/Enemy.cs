@@ -1,13 +1,14 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+// This is an empty class that servers as a proof of concept
+public class Enemy : BaseEnemy
 {
-    public bool IsMoving { get; private set; }
+    public bool IsMoving => isMoving;
 
-    public void TakeTurn()
+    public override void TakeTurn()
     {
-        // Basic enemy behavior - can be expanded later
-        // For now, just log
-        Debug.Log($"Enemy {gameObject.name} takes turn");
+        base.TakeTurn();
+
+        Debug.Log($"Overriden turn for {gameObject.name}");
     }
 }
