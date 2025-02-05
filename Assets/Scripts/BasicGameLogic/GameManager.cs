@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Player player;
     private List<Enemy> enemies = new List<Enemy>();
     private bool isProcessingTurn = false;
-    public Grid grid;
+    [SerializeField] private Grid grid;
+    public Grid Grid => grid;
 
     public const string ENEMY_TAG = "Enemy";
     public const string WALL_TAG = "Wall";
@@ -93,7 +94,7 @@ public class GameManager : MonoBehaviour
 
     /// <summary>
     /// Get the grid from the scene.
-    /// <param name="grid">Intended to be used by other scripts to access the grid.</param>
+    /// <returns>The grid from the scene. Or null and logs an error if no grid is found.</returns>
     /// </summary>
     private Grid GetGrid()
     {

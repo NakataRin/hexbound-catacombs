@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -19,7 +20,14 @@ public class Player : MonoBehaviour
             return;
         }
 
-        grid = GameManager.Instance.grid;
+        grid = GameManager.Instance.Grid;
+
+        if (grid == null)
+        {
+            Debug.LogError("Grid not found in scene");
+            enabled = false;
+            return;
+        }
 
         gameObject.tag = GameManager.PLAYER_TAG;
         
@@ -74,13 +82,16 @@ public class Player : MonoBehaviour
         Vector3 newWorldPosition = grid.GetCellCenterWorld(newGridPosition);
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, 0.1f);
 
-        if (hitCollider == null || (!hitCollider.CompareTag(GameManager.ENEMY_TAG) && !hitCollider.CompareTag(GameManager.WALL_TAG)))
+        bool isBlocked = hitCollider != null && 
+        (hitCollider.CompareTag(GameManager.ENEMY_TAG) || 
+        hitCollider.CompareTag(GameManager.WALL_TAG));
+
+        if (!isBlocked)
         {
             currentGridPosition = newGridPosition;
             targetPosition = newWorldPosition;
             isMoving = true;
         }
-
     }
 
     void EndTurn()
