@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -26,13 +27,24 @@ public class GameManager : MonoBehaviour
     {
         // Find all enemies in the scene
         enemies.AddRange(FindObjectsByType<Enemy>(FindObjectsSortMode.None));
-        
+        if (enemies.Count == 0)
+        {
+            Debug.LogWarning("No enemies found in the scene");
+        }
+
         // Ensure player reference is set
         if (player == null)
         {
             player = FindAnyObjectByType<Player>();
+            if (player == null)
+            {
+                Debug.LogError("No player found in the scene");
+                enabled = false;
+                return;
+            }
         }
     }
+
 
     public void NextTurn()
     {

@@ -15,8 +15,15 @@ public class Player : MonoBehaviour
         if (grid == null)
         {
             grid = FindAnyObjectByType<Grid>();
+            if (grid == null)
+            {
+                Debug.LogError("No Grid component found in the scene");
+                enabled = false;
+                return;
+            }
         }
         
+
         // Snap to grid on start
         currentGridPosition = grid.WorldToCell(transform.position);
         transform.position = grid.GetCellCenterWorld(currentGridPosition);
