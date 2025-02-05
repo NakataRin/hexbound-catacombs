@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Grid grid;  // Reference to the Grid component
-    
+
+    private Grid grid;
     private bool isPlayerTurn = true;
     private bool isMoving = false;
     private Vector3 targetPosition;
@@ -12,21 +13,28 @@ public class Player : MonoBehaviour
     
     void Start()
     {
+        if (GameManager.Instance == null)
+        {
+            Debug.LogError("GameManager not found in scene");
+            enabled = false;
+            return;
+        }
+
+        grid = GameManager.Instance.Grid;
+
         if (grid == null)
         {
-            grid = FindAnyObjectByType<Grid>();
-            if (grid == null)
-            {
-                Debug.LogError("No Grid component found in the scene");
-                enabled = false;
-                return;
-            }
+            Debug.LogError("Grid not found in scene");
+            enabled = false;
+            return;
         }
-        
 
+        gameObject.tag = GameManager.PLAYER_TAG;
+        
         // Snap to grid on start
         currentGridPosition = grid.WorldToCell(transform.position);
         transform.position = grid.GetCellCenterWorld(currentGridPosition);
+
         targetPosition = transform.position;
     }
 
@@ -71,12 +79,14 @@ public class Player : MonoBehaviour
     void TryMove(Vector3Int direction)
     {
         Vector3Int newGridPosition = currentGridPosition + direction;
-        
-        // Check if the new position has a wall
         Vector3 newWorldPosition = grid.GetCellCenterWorld(newGridPosition);
         Collider2D hitCollider = Physics2D.OverlapCircle(newWorldPosition, 0.1f);
 
-        if (hitCollider == null) // No wall at the new position
+        bool isBlocked = hitCollider != null && 
+        (hitCollider.CompareTag(GameManager.ENEMY_TAG) || 
+        hitCollider.CompareTag(GameManager.WALL_TAG));
+
+        if (!isBlocked)
         {
             currentGridPosition = newGridPosition;
             targetPosition = newWorldPosition;
