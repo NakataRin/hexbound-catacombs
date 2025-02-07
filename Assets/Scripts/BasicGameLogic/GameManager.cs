@@ -6,11 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     
+    public Grid Grid => grid;
+
+    [SerializeField] private Grid grid;
     [SerializeField] private Player player;
+    [SerializeField] private LevelGenerator levelGenerator;
     private List<Enemy> enemies = new List<Enemy>();
     private bool isProcessingTurn = false;
-    [SerializeField] private Grid grid;
-    public Grid Grid => grid;
 
     public const string ENEMY_TAG = "Enemy";
     public const string WALL_TAG = "Wall";
@@ -52,8 +54,16 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
-    }
 
+        if (levelGenerator == null)
+        {
+            Debug.LogError("No level generator found in the scene");
+            enabled = false;
+            return;
+        }
+
+        levelGenerator.GenerateLevel();
+    }
 
     public void NextTurn()
     {
@@ -81,8 +91,12 @@ public class GameManager : MonoBehaviour
         player.StartTurn();
     }
 
-    // Helper method to check if any enemies are still moving
+    /// <summary>
+    /// Helper method to check if any enemies are still moving.
+    /// </summary>
+    /// <returns>True if any enemies are still moving, false otherwise.</returns>
     public bool AreEnemiesMoving()
+
     {
         foreach (Enemy enemy in enemies)
         {
@@ -110,5 +124,14 @@ public class GameManager : MonoBehaviour
             }
         }
         return grid;
+    }
+
+    /// <summary>
+    /// Intended to be used when a player wants to generate a level with a specific seed. Unused for now.
+    /// </summary>
+    /// <param name="seed">Seed to generate the level with.</param>
+    public void GenerateLevelWithSeed(string seed)
+    {
+        levelGenerator.GenerateLevel(seed);
     }
 }
