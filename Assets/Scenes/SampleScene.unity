@@ -470,7 +470,7 @@ MonoBehaviour:
   floorTilemap: {fileID: 1223986676}
   wallTile: {fileID: 11400000, guid: 7d1b024280230d64ab7b5d26154a70f4, type: 2}
   floorTile: {fileID: 11400000, guid: debe8dab50a8ea14dbdb8c938b4216ea, type: 2}
-  roomSize: {x: 12, y: 8}
+  roomSize: {x: 50, y: 25}
   seedString: 
 --- !u!4 &1200141205
 Transform:

@@ -50,6 +50,9 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Generates the walls for the level. Inner walls are generated randomly, the amount of walls is based on the room size.
+    /// </summary>
     private void GenerateWalls()
     {
         // Generate outer walls
@@ -64,8 +67,13 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
+        float roomArea = roomSize.x * roomSize.y;
+        int minWalls = Mathf.FloorToInt(roomArea * 0.1f);
+        int maxWalls = Mathf.FloorToInt(roomArea * 0.2f);
+
+        int numInnerWalls = random.Next(minWalls, maxWalls + 1);
+
         // Generate some random inner walls
-        int numInnerWalls = random.Next(5, 10);
         for (int i = 0; i < numInnerWalls; i++)
         {
             int x = random.Next(0, roomSize.x);
